@@ -3,6 +3,9 @@ import numpy as np
 import math
 from collections import Counter
 import re
+from nltk.corpus import stopwords
+import nltk
+nltk.download('stopwords')
 
 df = pd.read_csv('annotated_articles.csv')
 
@@ -10,9 +13,10 @@ articles = df.iloc[:, :2]
 categories = df.iloc[:, 4]
 
 def tokenize(document):
-    words = [re.sub(r'[^a-zA-Z0-9]+', '', word.lower()) for word in document.split()]
+    stop_words = set(stopwords.words('english'))
+    words = [re.sub(r'[^a-zA-Z0-9]+', '', word.lower()) for word in document.split() if word.lower() not in stop_words and word.strip()]
+    words = [word for word in words if word]
     return words
-
 
 def calculate_tf(data):
     tf_matrix = []
